@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizBoost | Grow Your Business</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">Biz<span>Boost</span></a>
+        <p>Discover. Connect. Grow.</p>
+    </header>
+
+    <main>
+        <section class="hero">
+            <p class="eyebrow">SUPPORT LOCAL. GROW TOGETHER.</p>
+            <h1>Great businesses start <span>here.</span></h1>
+            <p>Discover local entrepreneurs, explore their products
+               and services, and support small businesses in your community.</p>
+
+            <a href="#directory" class="primary-button">
+                Explore businesses
+            </a>
+        </section>
+
+        <section class="directory" id="directory">
+            <div class="section-heading">
+                <p class="eyebrow">THE BIZBOOST COMMUNITY</p>
+                <h2>Discover businesses</h2>
+                <p>Find a business that offers what you need.</p>
+            </div>
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search business name or service..."
+                aria-label="Search businesses"
+            >
+
+            <div class="categories" id="categoryFilters">
+                
+                <button class="category-btn active" data-category="All">All</button>
+                <button class="category-btn" data-category="Delivery & Errands">Delivery & Errands</button>
+                <button class="category-btn" data-category="Food">Food</button>
+                <button class="category-btn" data-category="Fashion">Fashion</button>
+                <button class="category-btn" data-category="Beauty">Beauty</button>
+                <button class="category-btn" data-category="Technology">Technology</button>
+                <button class="category-btn" data-category="Services">Services</button>
+            </div>
+
+            <p id="resultCount" class="result-count"></p>
+
+            <div id="businessList" class="business-grid"></div>
+
+            <p id="emptyMessage" class="empty-message" hidden>
+                No businesses found. Try another search or category.
+            </p>
+        </section>
+
+        
+<section class="join-section" id="join">
+    <h2>Have a small business?</h2>
+    <p>Showcase your business and help more customers discover you.</p>
+
+    <button type="button" id="showFormButton" class="primary-button">
+        Add Your Business
+    </button>
+
+    <form id="businessForm" class="business-form" hidden>
+        <h3>Create Your Business Listing</h3>
+
+        <label for="businessName">Business Name</label>
+        <input
+            type="text"
+            id="businessName"
+            maxlength="60"
+            required
+            placeholder="Enter your business name"
+        >
+
+        <label for="businessCategory">Business Category</label>
+        <select id="businessCategory" required>
+            <option value="">Choose a category</option>            
+            <option value="Delivery & Errands">Delivery & Errands</option>
+            <option value="Food">Food</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Beauty">Beauty</option>
+            <option value="Technology">Technology</option>
+            <option value="Services">Services</option>
+        </select>
+
+        <label for="businessDescription">Description</label>
+        <textarea
+            id="businessDescription"
+            maxlength="200"
+            required
+            placeholder="Describe your products or services"
+        ></textarea>
+
+        <label for="businessLocation">Location</label>
+        <input
+            type="text"
+            id="businessLocation"
+            maxlength="80"
+            required
+            placeholder="e.g. Durban, KwaZulu-Natal"
+        >
+
+         
+        <label for="businessWhatsApp">WhatsApp Number</label>
+        <input
+            type="tel"
+            id="businessWhatsApp"
+            name="businessWhatsApp"
+            placeholder="e.g. 27712345678"
+            pattern="27[0-9]{9}"
+            title="Enter a South African number starting with 27, followed by 9 digits."
+            required
+       >
+
+
+        <button type="submit" class="contact-button">
+            Publish Business
+        </button>
+
+        <button type="button" id="cancelFormButton" class="cancel-button">
+            Cancel
+        </button>
+
+        <p id="formMessage" role="status" aria-live="polite"></p>
+    </form>
+</section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 BizBoost · Supporting young entrepreneurs</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
