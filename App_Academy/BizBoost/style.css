@@ -387,3 +387,76 @@ footer {
 .business-actions button {
     margin: 0;
 }
+
+
+.account-section {
+    padding: 45px 6%;
+    background: white;
+}
+
+.account-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 28px;
+    border: 1px solid #e5eaf0;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(18, 48, 71, 0.06);
+}
+
+.account-container h2 {
+    color: var(--navy);
+    margin: 8px 0;
+}
+
+.account-container > p {
+    color: var(--muted);
+}
+
+.account-form label {
+    display: block;
+    margin: 15px 0 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.account-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccd6df;
+    border-radius: 7px;
+    font: inherit;
+}
+
+.account-form .contact-button {
+    margin-top: 18px;
+}
+
+.account-form p {
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.account-switch {
+    margin-top: 6px;
+    border: none;
+    background: none;
+    color: #087e69;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#authMessage {
+    margin-top: 15px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 550px) {
+    .account-section {
+        padding: 30px 5%;
+    }
+
+    .account-container {
+        padding: 20px;
+    }
+}

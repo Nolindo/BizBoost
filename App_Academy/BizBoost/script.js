@@ -53,6 +53,12 @@ const businesses = [
     
 ];
 
+businesses.forEach(function (business, index) {
+    if (!business.id) {
+        business.id = "sample-" + index;
+    }
+});
+
 const businessList = document.getElementById("businessList");
 const searchInput = document.getElementById("searchInput");
 const categoryFilters = document.getElementById("categoryFilters");
@@ -161,6 +167,8 @@ editButton.addEventListener("click", function () {
     document.getElementById("businessWhatsApp").value =
         business.whatsapp || "";
 
+    businessForm.dataset.editingId = business.id;
+
         businessForm.hidden = false;
         showFormButton.hidden = true;
 
@@ -172,13 +180,64 @@ editButton.addEventListener("click", function () {
 });
 
 
+
 const deleteButton = document.createElement("button");
 deleteButton.className = "delete-button";
 deleteButton.textContent = "Delete";
 
 deleteButton.addEventListener("click", function () {
-    alert("Delete feature coming next!");
+    const confirmed = confirm(
+        "Are you sure you want to delete " +
+        business.name +
+        "? This action cannot be undone."
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    // Remove the business from the directory.
+    const businessIndex = businesses.findIndex(function (item) {
+        return String(item.id) === String(business.id);
+    });
+
+    if (businessIndex === -1) {
+        alert("Business not found. Please refresh and try again.");
+        return;
+    }
+
+    businesses.splice(businessIndex, 1);
+
+    // Remove the business from browser storage too.
+    try {
+        let savedBusinesses = JSON.parse(
+            localStorage.getItem("bizboostBusinesses") || "[]"
+        );
+
+        if (!Array.isArray(savedBusinesses)) {
+            savedBusinesses = [];
+        }
+
+        savedBusinesses = savedBusinesses.filter(function (item) {
+            return String(item.id) !== String(business.id);
+        });
+
+        localStorage.setItem(
+            "bizboostBusinesses",
+            JSON.stringify(savedBusinesses)
+        );
+    } catch (error) {
+        alert(
+            "The business was removed from the current view, " +
+            "but saving the deletion failed. Please refresh and check."
+        );
+        displayBusinesses();
+        return;
+    }
+
+    displayBusinesses();
 });
+
 
 actions.append(editButton, deleteButton);
 
@@ -271,17 +330,15 @@ cancelFormButton.addEventListener("click", function () {
     formMessage.className = "";
 });
 
+
 businessForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const name = document.getElementById("businessName").value.trim();
     const category = document.getElementById("businessCategory").value;
-    const description = document
-        .getElementById("businessDescription").value.trim();
-    const location = document
-        .getElementById("businessLocation").value.trim();
-    const whatsapp = document
-    .getElementById("businessWhatsApp").value.trim();
+    const description = document.getElementById("businessDescription").value.trim();
+    const location = document.getElementById("businessLocation").value.trim();
+    const whatsapp = document.getElementById("businessWhatsApp").value.trim();
 
     if (!name || !category || !description || !location) {
         formMessage.textContent = "Please complete all fields.";
@@ -289,13 +346,29 @@ businessForm.addEventListener("submit", function (event) {
         return;
     }
 
+    const editingId = businessForm.dataset.editingId;
+
+    // Find the existing business when editing.
+    const existingIndex = editingId
+        ? businesses.findIndex(function (business) {
+            return String(business.id) === String(editingId);
+        })
+        : -1;
+
+    if (editingId && existingIndex === -1) {
+        formMessage.textContent =
+            "Business not found. Please refresh and try again.";
+        formMessage.className = "error";
+        return;
+    }
+
     const newBusiness = {
-        id: crypto.randomUUID(),
+        id: editingId || crypto.randomUUID(),
         name: name,
         category: category,
         description: description,
         location: location,
-         whatsapp: whatsapp,
+        whatsapp: whatsapp,
         icon: {
             Food: "🍲",
             Fashion: "👗",
@@ -306,41 +379,61 @@ businessForm.addEventListener("submit", function (event) {
         }[category]
     };
 
-    let savedBusinesses = [];
+    // Update the existing business, or add a new one.
+    if (editingId) {
+        businesses[existingIndex] = newBusiness;
+    } else {
+        businesses.push(newBusiness);
+    }
 
+    // Save the updated list without adding another copy.
     try {
-        const existing = JSON.parse(
+        let savedBusinesses = JSON.parse(
             localStorage.getItem("bizboostBusinesses") || "[]"
         );
 
-        if (Array.isArray(existing)) {
-            savedBusinesses = existing;
+        if (!Array.isArray(savedBusinesses)) {
+            savedBusinesses = [];
+        }
+
+        if (editingId) {
+            const originalBusiness = businesses[existingIndex];
+
+            savedBusinesses = savedBusinesses.filter(function (business) {
+                return String(business.id) !== String(editingId) &&
+                    !(
+                        business.name.toLowerCase() === name.toLowerCase() &&
+                        business.category === category
+                    );
+            });
+
+            savedBusinesses.push(newBusiness);
+        } else {
+            savedBusinesses.push(newBusiness);
         }
 
         localStorage.setItem(
             "bizboostBusinesses",
-            JSON.stringify([...savedBusinesses, newBusiness])
+            JSON.stringify(savedBusinesses)
         );
     } catch (error) {
         formMessage.textContent =
-            "Could not save this listing in your browser. " +
-            "Check browser storage and try again.";
+            "Could not save the business. Please try again.";
         formMessage.className = "error";
         return;
     }
 
-    businesses.push(newBusiness);
-    displayBusinesses();
-
     businessForm.reset();
+    delete businessForm.dataset.editingId;
     businessForm.hidden = true;
     showFormButton.hidden = false;
 
     formMessage.textContent = "";
     formMessage.className = "";
 
+    displayBusinesses();
+
     document.getElementById("directory").scrollIntoView({
         behavior: "smooth"
     });
 });
-
